@@ -395,11 +395,9 @@ class ConversationManager {
   }
 }
 
-async function main() {
+export default async function main() {
   const conversationManager = new ConversationManager();
   if (await conversationManager.initialize()) {
     conversationManager.startConversation();
   }
 }
-
-main();
