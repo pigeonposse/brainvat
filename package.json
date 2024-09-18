@@ -1,0 +1,19 @@
+{
+  "name": "thinking",
+  "version": "1.0.0",
+  "description": "Proyecto con IA que utiliza un sistema de thinking.",
+  "main": "thinking.mjs",
+  "type": "module",
+  "scripts": {
+    "start": "node thinking.mjs"
+  },
+  "dependencies": {
+    "afinn-165": "^2.0.2",
+    "chalk": "^5.3.0",
+    "inquirer": "^9.3.6",
+    "natural": "^8.0.1",
+    "requirer": "^0.0.4"
+  },
+  "author": "Tu Nombre",
+  "license": "MIT"
+}
