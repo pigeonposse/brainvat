@@ -42,13 +42,13 @@ To install the library, use npm or yarn:
 
 ```bash
 # Using npm
-npm create brainvat
+npm install brainvat
 
 # Using pnpm
-pnpm create brainvat
+pnpm i brainvat
 
 # Using yarn
-yarn create brainvat
+yarn add brainvat
 ```
 
 ## ☕ Donate
