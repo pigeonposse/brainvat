@@ -12,7 +12,15 @@ class AIDetector {
   async detectAI() {
     try {
       const output = execSync('ollama list', { encoding: 'utf-8' });
-      const models = output.split('\n').filter(line => line.trim()).map(line => line.split(' ')[0]);
+      const lines  = output.split( '\n' ).filter( line => line.trim() )
+
+      const models = lines.slice( 1 ).map( line => {
+  
+        const [ modelName ] = line.trim().split( /\s+/ )
+        return modelName
+      
+      } )
+
       if (models.length > 0) {
         return {
           name: 'ollama',
