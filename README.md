@@ -11,7 +11,7 @@
 [![License](https://img.shields.io/github/license/pigeonposse/personality?color=blue&label=License&style=flat-square)](https://npmjs.com/package/brainvat)
 [![Version](https://img.shields.io/npm/v/brainvat?color=a1b858&label&style=flat-square)](https://npmjs.com/package/brainvat)
 
-## Library/CLI for Crafting and Sustaining AI Personalities
+## Advanced reasoning system along with an emotional layer
 
 ![EXPLANATION1](docs/explanation1.png)
 
