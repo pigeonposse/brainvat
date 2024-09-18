@@ -13,7 +13,7 @@
 
 ## Library/CLI for Crafting and Sustaining AI Personalities
 
-![EXPLANATION](docs/explanation1.png)
+![EXPLANATION1](docs/explanation1.png)
 
 # Brainvat
 
@@ -30,7 +30,7 @@
 - 🤔 Stimulates further user reflection with open-ended questions.
 - 🌍 Fully accessible and available for public use and contributions.
 
-![EXPLANATION](docs/explanation2.png)
+![EXPLANATION2](docs/explanation2.png)
 
 ## Prerequisites
 
