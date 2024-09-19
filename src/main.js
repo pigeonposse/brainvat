@@ -1,4 +1,4 @@
-import { execSync } from 'child_process';
+import { spawnSync, execSync } from 'child_process';
 import readline from 'readline';
 import chalk from 'chalk';
 import natural from 'natural';
@@ -194,7 +194,7 @@ class ReflectionEngine {
       La reflexión debe ser un párrafo cohesivo, sin viñetas ni numeración, que fluya naturalmente entre estos aspectos.
     `.trim();
 
-    console.log(chalk.hex(REFLEXION_COLOR)('🧠 Generando reflexión...'));
+    console.log(chalk.hex(REFLEXION_COLOR)('🧠 Generating reflection ... '));
 
     const startTime = Date.now();
 
@@ -208,12 +208,12 @@ class ReflectionEngine {
       this.updateEmotionalState(reflectionResponse);
 
       console.log(chalk.hex(REFLEXION_COLOR)(reflectionResponse));
-      console.log(chalk.hex(REFLEXION_COLOR)(`Tiempo total de la reflexión: ${setTimeString(elapsedTime)}`));
+      console.log(chalk.hex(REFLEXION_COLOR)(`Total reflection time: ${setTimeString(elapsedTime)}`));
 
       return reflectionResponse;
     } catch (error) {
-      console.error('Error al generar la reflexión:', error);
-      return 'Error al generar la reflexión';
+      console.error('Error generating reflection:', error);
+      return 'Error when generating reflection ';
     }
   }
 
@@ -235,8 +235,15 @@ class ReflectionEngine {
   }
 
   async executeCommand(command) {
-    return execSync(command, { encoding: 'utf-8' }).trim();
+    return spawnSync(command, { 
+      shell : true,
+      stdio : 'inherit',
+    })
   }
+  // async executeCommandChild(command) {
+  //   return execSync(command, { encoding: 'utf-8' }).trim();
+  // }
+
 }
 
 class ResponseGenerator {
@@ -276,8 +283,8 @@ class ResponseGenerator {
       const response = await this.executeCommand(`ollama run ${aiModel} "${this.sanitizeInput(responsePrompt)}"`);
       return response;
     } catch (error) {
-      console.error('Error generando respuesta:', error);
-      return 'Lo siento, tuve un problema al procesar tu pregunta. ¿Podrías reformularla?';
+      console.error('Error generating answer:', error);
+      return 'Sorry, I had a problem when processing your question.Could you reformulate it?';
     }
   }
 
@@ -286,7 +293,10 @@ class ResponseGenerator {
   }
 
   async executeCommand(command) {
-    return execSync(command, { encoding: 'utf-8' }).trim();
+    return spawnSync(command, { 
+      shell : true,
+      stdio : 'inherit',
+    })
   }
 }
 
@@ -317,12 +327,18 @@ class ConversationManager {
       input: process.stdin,
       output: process.stdout
     });
+    readline.cursorTo(process.stdout, 0, 0);
+    readline.clearScreenDown( process.stdout );
+    this.rl.resume();
+    this.rl.on('close', () => {
+      console.log('\n\nBye bye! 👋\n');
+    });
   }
 
   async initialize() {
     const ai = await new AIDetector().detectAI();
     if (!ai || ai.models.length === 0) {
-      console.error('No se detectaron modelos AI disponibles.');
+      console.error('No AI models were detected.');
       return false;
     }
 
@@ -333,18 +349,18 @@ class ConversationManager {
 
   async selectModel(models) {
     return new Promise((resolve) => {
-      console.log('Modelos de Ollama disponibles:');
+      console.log('Available Ollama models:');
       models.forEach((model, index) => {
         console.log(`${index + 1}. ${model}`);
       });
 
-      this.rl.question('Selecciona el modelo de Ollama (ingresa el número): ', (answer) => {
+      this.rl.question('Select the Ollama model (enter the number):', (answer) => {
         const index = parseInt(answer, 10) - 1;
         if (index >= 0 && index < models.length) {
           this.aiModel = models[index];
           resolve();
         } else {
-          console.log('Selección inválida, intenta de nuevo.');
+          console.log('Invalid selection, tries again.');
           this.selectModel(models).then(resolve);
         }
       });
@@ -353,9 +369,9 @@ class ConversationManager {
 
   async setConversationContext() {
     return new Promise((resolve) => {
-      this.rl.question('Introduce el tema general de la conversación: ', (topic) => {
+      this.rl.question('Enter the general theme of the conversation:', (topic) => {
         this.context = topic;
-        this.knowledgeBase.addFact(`El tema principal de la conversación es ${topic}`);
+        this.knowledgeBase.addFact(`The main theme of the conversation is $ {topic}`);
         resolve();
       });
     });
@@ -366,13 +382,13 @@ class ConversationManager {
 
     const reflection = await this.reflectionEngine.generateReflection(userPrompt, this.context, this.aiModel);
 
-    console.log(chalk.hex(RESPUESTA_COLOR)('🤖 Generando respuesta...'));
+    console.log(chalk.hex(RESPUESTA_COLOR)('🤖 Generating answer ... '));
     const response = await this.responseGenerator.generateResponse(userPrompt, reflection, this.aiModel);
     console.log(chalk.hex(RESPUESTA_COLOR)(response));
 
     const endTime = Date.now();
     const duration = endTime - startTime;
-    console.log(chalk.bold(`\nTiempo total de procesamiento: ${setTimeString(duration)}`));
+    console.log(chalk.bold(`\nTotal processing time: ${setTimeString(duration)}`));
 
     this.updateInternalState(userPrompt, response, reflection);
   }
@@ -390,7 +406,7 @@ class ConversationManager {
     const askQuestion = () => {
       this.rl.question('Escribe tu pregunta (o "exit" para terminar): ', async (userPrompt) => {
         if (userPrompt.toLowerCase() === 'exit') {
-          console.log('Terminando la conversación...');
+          console.log('Ending the conversation ...');
           this.rl.close();
         } else {
           await this.processUserInput(userPrompt);

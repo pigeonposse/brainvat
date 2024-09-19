@@ -1,5 +1,11 @@
 # smartplant
 
+## 0.1.2
+
+### Patch Changes
+
+- change lang and add feats in readline
+
 ## 0.1.1
 
 ### Patch Changes
