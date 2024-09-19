@@ -8,7 +8,7 @@ import {
 const run = async () => {
 
 	const require = createRequire( import.meta.url )
-	const pkg     = require( './package.json' )
+	const pkg     = require( '../package.json' )
 
 	await build( {
 		input : resolvePath( join( 'src', 'bin' ) ),

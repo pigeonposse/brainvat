@@ -1,3 +1,3 @@
-import brainvat from './main.js';
+import brainvat from './main.js'
 
 brainvat()

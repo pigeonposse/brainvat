@@ -15,8 +15,6 @@
 
 ![EXPLANATION1](docs/explanation1.png)
 
-# Brainvat
-
 **Brainvat** is an artificial intelligence library designed to provide a more human and natural interaction with the user. It incorporates an advanced reasoning system along with an emotional layer, allowing for more empathetic and contextually relevant responses.
 
 ## Features
@@ -65,7 +63,7 @@ This software is licensed with **[GPL-3.0](/LICENSE)**.
 
 ## 🐦 About us
 
-*PigeonPosse* is a ✨ **code development collective** ✨ focused on creating practical and interesting tools that help developers and users enjoy a more agile and comfortable experience. Our projects cover various programming sectors and we do not have a thematic limitation in terms of projects.
+_PigeonPosse_ is a ✨ **code development collective** ✨ focused on creating practical and interesting tools that help developers and users enjoy a more agile and comfortable experience. Our projects cover various programming sectors and we do not have a thematic limitation in terms of projects.
 
 [![More](https://img.shields.io/badge/Read-more-grey?style=for-the-badge)](https://github.com/pigeonposse)
 
@@ -73,11 +71,8 @@ This software is licensed with **[GPL-3.0](/LICENSE)**.
 
 |                                                                                    | Name        | Role         | GitHub                                         |
 | ---------------------------------------------------------------------------------- | ----------- | ------------ | ---------------------------------------------- |
-| <img src="https://github.com/alejomalia.png?size=72" alt="Angelo" style="border-radius:100%"/> | Alejo |   Author & Development   | [@alejomalia](https://github.com/alejomalia) |
-| <img src="https://github.com/PigeonPosse.png?size=72" alt="PigeonPosse" style="border-radius:100%"/> | PigeonPosse | Collective | [@PigeonPosse](https://github.com/PigeonPosse) |
-
-<br>
-<p align="center">
+| ![Alejo](https://github.com/alejomalia.png?size=72) | Alejo |   Author & Development   | [@alejomalia](https://github.com/alejomalia) |
+| ![Pigeonposse](https://github.com/pigeonposse.png?size=72) | PigeonPosse | Collective | [@PigeonPosse](https://github.com/pigeonposse) |
 
 [![Web](https://img.shields.io/badge/Web-grey?style=for-the-badge&logoColor=white)](https://pigeonposse.com)
 [![About Us](https://img.shields.io/badge/About%20Us-grey?style=for-the-badge&logoColor=white)](https://pigeonposse.com?popup=about)
@@ -86,5 +81,3 @@ This software is licensed with **[GPL-3.0](/LICENSE)**.
 [![Twitter](https://img.shields.io/badge/Twitter-black?style=for-the-badge&logo=twitter&logoColor=white)](https://twitter.com/pigeonposse_)
 [![Instagram](https://img.shields.io/badge/Instagram-black?style=for-the-badge&logo=instagram&logoColor=white)](https://www.instagram.com/pigeon.posse/)
 [![Medium](https://img.shields.io/badge/Medium-black?style=for-the-badge&logo=medium&logoColor=white)](https://medium.com/@pigeonposse)
-
-</p>

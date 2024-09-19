@@ -1,181 +1,269 @@
-import { spawnSync, execSync } from 'child_process';
-import readline from 'readline';
-import chalk from 'chalk';
-import natural from 'natural';
+import color  from 'chalk'
+import {
+	spawnSync,
+	execSync, 
+} from 'child_process'
+import natural  from 'natural'
+import readline from 'readline'
 
-const REFLEXION_COLOR = '#ef8da8';
-const RESPUESTA_COLOR = '#15b3ad';
-const setTimeString = (elapsedTime) => `${(elapsedTime / 1000).toFixed(2)} s`;
+const BOLD            = color.bold
+const REFLEXION_COLOR = color.hex( '#ef8da8' )
+const RESPONSE_COLOR  = color.hex( '#15b3ad' )
+const createReadLine  = () => {
 
+	const rl = readline.createInterface( {
+		input  : process.stdin,
+		output : process.stdout,
+	} )
+	readline.cursorTo( process.stdout, 0, 0 )
+	readline.clearScreenDown( process.stdout )
+	rl.resume()
+	rl.on( 'close', () => {
+
+		console.warn( '\n\nBye bye! 👋\n' )
+  
+	} )
+	return rl
+
+}
+const setTimeString = elapsedTime => `${( elapsedTime / 1000 ).toFixed( 2 )} s`
 
 class AIDetector {
-  async detectAI() {
-    try {
-      const output = execSync('ollama list', { encoding: 'utf-8' });
-      const lines  = output.split( '\n' ).filter( line => line.trim() )
 
-      const models = lines.slice( 1 ).map( line => {
+	async detectAI() {
+
+		try {
+
+			const output = execSync( 'ollama list', { encoding: 'utf-8' } )
+			const lines  = output.split( '\n' ).filter( line => line.trim() )
+
+			const models = lines.slice( 1 ).map( line => {
   
-        const [ modelName ] = line.trim().split( /\s+/ )
-        return modelName
+				const [ modelName ] = line.trim().split( /\s+/ )
+				return modelName
       
-      } )
+			} )
 
-      if (models.length > 0) {
-        return {
-          name: 'ollama',
-          models: models
-        };
-      }
-    } catch (error) {
-      console.error('Error detecting Ollama:', error.message);
-    }
-    return null;
-  }
+			if ( models.length > 0 ) {
+
+				return {
+					name   : 'ollama',
+					models : models,
+				}
+			
+			}
+		
+		} catch ( error ) {
+
+			console.error( 'Error detecting Ollama:', error.message )
+		
+		}
+		return null
+	
+	}
+
 }
 
 class PersonalityTraits {
-  constructor() {
-    this.openness = Math.random();
-    this.conscientiousness = Math.random();
-    this.extraversion = Math.random();
-    this.agreeableness = Math.random();
-    this.neuroticism = Math.random();
-  }
 
-  getTraitDescription(trait) {
-    if (trait < 0.3) return "bajo";
-    if (trait < 0.7) return "moderado";
-    return "alto";
-  }
+	constructor() {
 
-  describePersonality() {
-    return `Soy una IA con ${this.getTraitDescription(this.openness)} apertura, ${this.getTraitDescription(this.conscientiousness)} responsabilidad, ${this.getTraitDescription(this.extraversion)} extraversión, ${this.getTraitDescription(this.agreeableness)} amabilidad y ${this.getTraitDescription(this.neuroticism)} neuroticismo.`;
-  }
+		this.openness          = Math.random()
+		this.conscientiousness = Math.random()
+		this.extraversion      = Math.random()
+		this.agreeableness     = Math.random()
+		this.neuroticism       = Math.random()
+	
+	}
+
+	getTraitDescription( trait ) {
+
+		if ( trait < 0.3 ) return 'bajo'
+		if ( trait < 0.7 ) return 'moderado'
+		return 'alto'
+	
+	}
+
+	describePersonality() {
+
+		return `Soy una IA con ${this.getTraitDescription( this.openness )} apertura, ${this.getTraitDescription( this.conscientiousness )} responsabilidad, ${this.getTraitDescription( this.extraversion )} extraversión, ${this.getTraitDescription( this.agreeableness )} amabilidad y ${this.getTraitDescription( this.neuroticism )} neuroticismo.`
+	
+	}
+
 }
 
 class EmotionalState {
-  constructor() {
-    this.emotions = {
-      joy: 0.5,
-      sadness: 0.5,
-      anger: 0.5,
-      fear: 0.5,
-      disgust: 0.5,
-      surprise: 0.5,
-      trust: 0.5,
-      anticipation: 0.5
-    };
-    this.moodStability = Math.random();
-  }
 
-  updateEmotion(emotion, value) {
-    const change = value * (1 - this.moodStability);
-    this.emotions[emotion] = Math.max(0, Math.min(1, this.emotions[emotion] + change));
-  }
+	constructor() {
 
-  getDominantEmotion() {
-    return Object.entries(this.emotions).reduce((a, b) => a[1] > b[1] ? a : b)[0];
-  }
+		this.emotions      = {
+			joy          : 0.5,
+			sadness      : 0.5,
+			anger        : 0.5,
+			fear         : 0.5,
+			disgust      : 0.5,
+			surprise     : 0.5,
+			trust        : 0.5,
+			anticipation : 0.5,
+		}
+		this.moodStability = Math.random()
+	
+	}
 
-  getEmotionalStateDescription() {
-    const dominant = this.getDominantEmotion();
-    return `Mi emoción dominante es ${dominant} con intensidad ${this.emotions[dominant].toFixed(2)}.`;
-  }
+	updateEmotion( emotion, value ) {
+
+		const change             = value * ( 1 - this.moodStability )
+		this.emotions[ emotion ] = Math.max( 0, Math.min( 1, this.emotions[ emotion ] + change ) )
+	
+	}
+
+	getDominantEmotion() {
+
+		return Object.entries( this.emotions ).reduce( ( a, b ) => a[ 1 ] > b[ 1 ] ? a : b )[ 0 ]
+	
+	}
+
+	getEmotionalStateDescription() {
+
+		const dominant = this.getDominantEmotion()
+		return `Mi emoción dominante es ${dominant} con intensidad ${this.emotions[ dominant ].toFixed( 2 )}.`
+	
+	}
+
 }
 
 class MemoryBank {
-  constructor() {
-    this.shortTermMemory = [];
-    this.longTermMemory = new Map();
-  }
 
-  addToShortTermMemory(item) {
-    this.shortTermMemory.push(item);
-    if (this.shortTermMemory.length > 5) {
-      this.shortTermMemory.shift();
-    }
-  }
+	constructor() {
 
-  addToLongTermMemory(key, value) {
-    this.longTermMemory.set(key, value);
-  }
+		this.shortTermMemory = []
+		this.longTermMemory  = new Map()
+	
+	}
 
-  retrieveFromShortTermMemory() {
-    return this.shortTermMemory;
-  }
+	addToShortTermMemory( item ) {
 
-  retrieveFromLongTermMemory(key) {
-    return this.longTermMemory.get(key);
-  }
+		this.shortTermMemory.push( item )
+		if ( this.shortTermMemory.length > 5 ) {
+
+			this.shortTermMemory.shift()
+		
+		}
+	
+	}
+
+	addToLongTermMemory( key, value ) {
+
+		this.longTermMemory.set( key, value )
+	
+	}
+
+	retrieveFromShortTermMemory() {
+
+		return this.shortTermMemory
+	
+	}
+
+	retrieveFromLongTermMemory( key ) {
+
+		return this.longTermMemory.get( key )
+	
+	}
+
 }
 
 class KnowledgeBase {
-  constructor() {
-    this.facts = new Set();
-    this.beliefs = new Map();
-  }
 
-  addFact(fact) {
-    this.facts.add(fact);
-  }
+	constructor() {
 
-  addBelief(topic, belief) {
-    this.beliefs.set(topic, belief);
-  }
+		this.facts   = new Set()
+		this.beliefs = new Map()
+	
+	}
 
-  getFacts() {
-    return Array.from(this.facts);
-  }
+	addFact( fact ) {
 
-  getBelief(topic) {
-    return this.beliefs.get(topic);
-  }
+		this.facts.add( fact )
+	
+	}
+
+	addBelief( topic, belief ) {
+
+		this.beliefs.set( topic, belief )
+	
+	}
+
+	getFacts() {
+
+		return Array.from( this.facts )
+	
+	}
+
+	getBelief( topic ) {
+
+		return this.beliefs.get( topic )
+	
+	}
+
 }
 
 class LanguageProcessor {
-  constructor() {
-    this.tokenizer = new natural.WordTokenizer();
-    this.stemmer = natural.PorterStemmer;
-    this.sentiment = new natural.SentimentAnalyzer('Spanish', this.stemmer, 'afinn');
-  }
 
-  tokenize(text) {
-    return this.tokenizer.tokenize(text);
-  }
+	constructor() {
 
-  stem(word) {
-    return this.stemmer.stem(word);
-  }
+		this.tokenizer = new natural.WordTokenizer()
+		this.stemmer   = natural.PorterStemmer
+		this.sentiment = new natural.SentimentAnalyzer( 'Spanish', this.stemmer, 'afinn' )
+	
+	}
 
-  analyzeSentiment(text) {
-    const tokens = this.tokenize(text);
-    return this.sentiment.getSentiment(tokens);
-  }
+	tokenize( text ) {
+
+		return this.tokenizer.tokenize( text )
+	
+	}
+
+	stem( word ) {
+
+		return this.stemmer.stem( word )
+	
+	}
+
+	analyzeSentiment( text ) {
+
+		const tokens = this.tokenize( text )
+		return this.sentiment.getSentiment( tokens )
+	
+	}
+
 }
 class ReflectionEngine {
-  constructor(personality, emotionalState, memoryBank, knowledgeBase, languageProcessor) {
-    this.personality = personality;
-    this.emotionalState = emotionalState;
-    this.memoryBank = memoryBank;
-    this.knowledgeBase = knowledgeBase;
-    this.languageProcessor = languageProcessor;
-    this.previousThinking = '';
-    this.previousResponse = '';
-    this.confidenceLevel = 0.5;
-  }
 
-  async generateReflection(userPrompt, context, aiModel) {
-    const tokens = this.languageProcessor.tokenize(userPrompt);
-    const sentiment = this.languageProcessor.analyzeSentiment(userPrompt);
-    const relevantMemories = this.memoryBank.retrieveFromShortTermMemory();
-    const relevantFacts = this.knowledgeBase.getFacts().filter(fact => 
-      tokens.some(token => fact.includes(this.languageProcessor.stem(token)))
-    );
+	constructor( personality, emotionalState, memoryBank, knowledgeBase, languageProcessor ) {
 
-    const previousData = this.previousThinking ? `Reflexión anterior: "${this.previousThinking}"\nRespuesta anterior: "${this.previousResponse}"\n` : '';
+		this.personality       = personality
+		this.emotionalState    = emotionalState
+		this.memoryBank        = memoryBank
+		this.knowledgeBase     = knowledgeBase
+		this.languageProcessor = languageProcessor
+		this.previousThinking  = ''
+		this.previousResponse  = ''
+		this.confidenceLevel   = 0.5
+	
+	}
 
-    const reflectionPrompt = `
+	async generateReflection( userPrompt, context, aiModel ) {
+
+		// const tokens = this.languageProcessor.tokenize( userPrompt )
+		// const sentiment        = this.languageProcessor.analyzeSentiment( userPrompt )
+		// const relevantMemories = this.memoryBank.retrieveFromShortTermMemory()
+		// const relevantFacts    = this.knowledgeBase.getFacts().filter( fact => 
+		// 	tokens.some( token => fact.includes( this.languageProcessor.stem( token ) ) ),
+		// )
+
+		const previousData = this.previousThinking ? `Reflexión anterior: "${this.previousThinking}"\nRespuesta anterior: "${this.previousResponse}"\n` : ''
+
+		const reflectionPrompt = `
       Tema general: ${context}.
       Pregunta del usuario: "${userPrompt}".
       ${previousData}
@@ -192,74 +280,91 @@ class ReflectionEngine {
       6. Evaluación crítica de tu capacidad para responder adecuadamente.
       
       La reflexión debe ser un párrafo cohesivo, sin viñetas ni numeración, que fluya naturalmente entre estos aspectos.
-    `.trim();
+    `.trim()
 
-    console.log(chalk.hex(REFLEXION_COLOR)('🧠 Generating reflection ... '));
+		console.log( REFLEXION_COLOR( '🧠 Generating reflection ... ' ) )
 
-    const startTime = Date.now();
+		const startTime = Date.now()
 
-    try {
-      const reflectionResponse = await this.executeCommand(`ollama run ${aiModel} "${this.sanitizeInput(reflectionPrompt)}"`);
-      const endTime = Date.now();
-      const elapsedTime = endTime - startTime;
+		try {
 
-      this.previousThinking = reflectionResponse;
-      this.updateConfidenceLevel(elapsedTime);
-      this.updateEmotionalState(reflectionResponse);
+			const reflectionResponse = await this.executeCommand( `ollama run ${aiModel} "${this.sanitizeInput( reflectionPrompt )}"` )
+			const endTime            = Date.now()
+			const elapsedTime        = endTime - startTime
 
-      console.log(chalk.hex(REFLEXION_COLOR)(reflectionResponse));
-      console.log(chalk.hex(REFLEXION_COLOR)(`Total reflection time: ${setTimeString(elapsedTime)}`));
+			this.previousThinking = reflectionResponse
+			this.updateConfidenceLevel( elapsedTime )
+			this.updateEmotionalState( reflectionResponse )
 
-      return reflectionResponse;
-    } catch (error) {
-      console.error('Error generating reflection:', error);
-      return 'Error when generating reflection ';
-    }
-  }
+			console.log( REFLEXION_COLOR( reflectionResponse ) )
+			console.log( REFLEXION_COLOR( `Total reflection time: ${setTimeString( elapsedTime )}` ) )
 
-  updateConfidenceLevel(elapsedTime) {
-    // Ajusta el nivel de confianza basado en el tiempo de respuesta
-    const baseConfidence = 0.5;
-    const timeInfluence = Math.min(elapsedTime / 10000, 1); // Normaliza el tiempo a un máximo de 10 segundos
-    this.confidenceLevel = baseConfidence * (1 - timeInfluence) + Math.random() * timeInfluence;
-  }
+			return reflectionResponse
+		
+		} catch ( error ) {
 
-  updateEmotionalState(reflection) {
-    const sentiment = this.languageProcessor.analyzeSentiment(reflection);
-    this.emotionalState.updateEmotion('joy', sentiment > 0 ? 0.1 : -0.1);
-    this.emotionalState.updateEmotion('sadness', sentiment < 0 ? 0.1 : -0.1);
-  }
+			console.error( 'Error generating reflection:', error )
+			return 'Error when generating reflection '
+		
+		}
+	
+	}
 
-  sanitizeInput(input) {
-    return input.replace(/"/g, '\\"');
-  }
+	updateConfidenceLevel( elapsedTime ) {
 
-  async executeCommand(command) {
-    return spawnSync(command, { 
-      shell : true,
-      stdio : 'inherit',
-    })
-  }
-  // async executeCommandChild(command) {
-  //   return execSync(command, { encoding: 'utf-8' }).trim();
-  // }
+		// Ajusta el nivel de confianza basado en el tiempo de respuesta
+		const baseConfidence = 0.5
+		const timeInfluence  = Math.min( elapsedTime / 10000, 1 ) // Normaliza el tiempo a un máximo de 10 segundos
+		this.confidenceLevel = baseConfidence * ( 1 - timeInfluence ) + Math.random() * timeInfluence
+	
+	}
+
+	updateEmotionalState( reflection ) {
+
+		const sentiment = this.languageProcessor.analyzeSentiment( reflection )
+		this.emotionalState.updateEmotion( 'joy', sentiment > 0 ? 0.1 : -0.1 )
+		this.emotionalState.updateEmotion( 'sadness', sentiment < 0 ? 0.1 : -0.1 )
+	
+	}
+
+	sanitizeInput( input ) {
+
+		return input.replace( /"/g, '\\"' )
+	
+	}
+
+	async executeCommand( command ) {
+
+		return spawnSync( command, { 
+			shell : true,
+			stdio : 'inherit',
+		} )
+	
+	}
+	// async executeCommandChild(command) {
+	//   return execSync(command, { encoding: 'utf-8' }).trim();
+	// }
 
 }
 
 class ResponseGenerator {
-  constructor(personality, emotionalState, memoryBank, knowledgeBase, languageProcessor) {
-    this.personality = personality;
-    this.emotionalState = emotionalState;
-    this.memoryBank = memoryBank;
-    this.knowledgeBase = knowledgeBase;
-    this.languageProcessor = languageProcessor;
-  }
 
-  async generateResponse(userPrompt, reflection, aiModel) {
-    const dominantEmotion = this.emotionalState.getDominantEmotion();
-    const personalityTrait = Object.entries(this.personality).reduce((a, b) => a[1] > b[1] ? a : b)[0];
+	constructor( personality, emotionalState, memoryBank, knowledgeBase, languageProcessor ) {
 
-    let responsePrompt = `
+		this.personality       = personality
+		this.emotionalState    = emotionalState
+		this.memoryBank        = memoryBank
+		this.knowledgeBase     = knowledgeBase
+		this.languageProcessor = languageProcessor
+	
+	}
+
+	async generateResponse( userPrompt, reflection, aiModel ) {
+
+		const dominantEmotion  = this.emotionalState.getDominantEmotion()
+		const personalityTrait = Object.entries( this.personality ).reduce( ( a, b ) => a[ 1 ] > b[ 1 ] ? a : b )[ 0 ]
+
+		let responsePrompt = `
       Basándote en la siguiente reflexión: "${reflection}"
       
       Y considerando que:
@@ -277,151 +382,196 @@ class ResponseGenerator {
       - Una introducción que reconozca la pregunta o comentario del usuario
       - El cuerpo principal de la respuesta, abordando el tema
       - Una conclusión o pregunta de seguimiento para mantener la conversación
-    `;
+    `
 
-    try {
-      const response = await this.executeCommand(`ollama run ${aiModel} "${this.sanitizeInput(responsePrompt)}"`);
-      return response;
-    } catch (error) {
-      console.error('Error generating answer:', error);
-      return 'Sorry, I had a problem when processing your question.Could you reformulate it?';
-    }
-  }
+		try {
 
-  sanitizeInput(input) {
-    return input.replace(/"/g, '\\"');
-  }
+			const response = await this.executeCommand( `ollama run ${aiModel} "${this.sanitizeInput( responsePrompt )}"` )
+			return response
+		
+		} catch ( error ) {
 
-  async executeCommand(command) {
-    return spawnSync(command, { 
-      shell : true,
-      stdio : 'inherit',
-    })
-  }
+			console.error( 'Error generating answer:', error )
+			return 'Sorry, I had a problem when processing your question.Could you reformulate it?'
+		
+		}
+	
+	}
+
+	sanitizeInput( input ) {
+
+		return input.replace( /"/g, '\\"' )
+	
+	}
+
+	async executeCommand( command ) {
+
+		return spawnSync( command, { 
+			shell : true,
+			stdio : 'inherit',
+		} )
+	
+	}
+
 }
 
 class ConversationManager {
-  constructor() {
-    this.personality = new PersonalityTraits();
-    this.emotionalState = new EmotionalState();
-    this.memoryBank = new MemoryBank();
-    this.knowledgeBase = new KnowledgeBase();
-    this.languageProcessor = new LanguageProcessor();
-    this.reflectionEngine = new ReflectionEngine(
-      this.personality,
-      this.emotionalState,
-      this.memoryBank,
-      this.knowledgeBase,
-      this.languageProcessor
-    );
-    this.responseGenerator = new ResponseGenerator(
-      this.personality,
-      this.emotionalState,
-      this.memoryBank,
-      this.knowledgeBase,
-      this.languageProcessor
-    );
-    this.context = '';
-    this.aiModel = '';
-    this.rl = readline.createInterface({
-      input: process.stdin,
-      output: process.stdout
-    });
-    readline.cursorTo(process.stdout, 0, 0);
-    readline.clearScreenDown( process.stdout );
-    this.rl.resume();
-    this.rl.on('close', () => {
-      console.log('\n\nBye bye! 👋\n');
-    });
-  }
 
-  async initialize() {
-    const ai = await new AIDetector().detectAI();
-    if (!ai || ai.models.length === 0) {
-      console.error('No AI models were detected.');
-      return false;
-    }
+	constructor() {
 
-    await this.selectModel(ai.models);
-    await this.setConversationContext();
-    return true;
-  }
+		this.personality       = new PersonalityTraits()
+		this.emotionalState    = new EmotionalState()
+		this.memoryBank        = new MemoryBank()
+		this.knowledgeBase     = new KnowledgeBase()
+		this.languageProcessor = new LanguageProcessor()
+		this.reflectionEngine  = new ReflectionEngine(
+			this.personality,
+			this.emotionalState,
+			this.memoryBank,
+			this.knowledgeBase,
+			this.languageProcessor,
+		)
+		this.responseGenerator = new ResponseGenerator(
+			this.personality,
+			this.emotionalState,
+			this.memoryBank,
+			this.knowledgeBase,
+			this.languageProcessor,
+		)
+		this.context           = ''
+		this.aiModel           = ''
+		this.rl                = createReadLine()
+	
+	}
 
-  async selectModel(models) {
-    return new Promise((resolve) => {
-      console.log('Available Ollama models:');
-      models.forEach((model, index) => {
-        console.log(`${index + 1}. ${model}`);
-      });
+	async initialize() {
 
-      this.rl.question('Select the Ollama model (enter the number):', (answer) => {
-        const index = parseInt(answer, 10) - 1;
-        if (index >= 0 && index < models.length) {
-          this.aiModel = models[index];
-          resolve();
-        } else {
-          console.log('Invalid selection, tries again.');
-          this.selectModel(models).then(resolve);
-        }
-      });
-    });
-  }
+		const ai = await new AIDetector().detectAI()
+		if ( !ai || ai.models.length === 0 ) {
 
-  async setConversationContext() {
-    return new Promise((resolve) => {
-      this.rl.question('Enter the general theme of the conversation:', (topic) => {
-        this.context = topic;
-        this.knowledgeBase.addFact(`The main theme of the conversation is $ {topic}`);
-        resolve();
-      });
-    });
-  }
+			console.error( 'No AI models were detected.' )
+			return false
+		
+		}
 
-  async processUserInput(userPrompt) {
-    const startTime = Date.now();
+		await this.selectModel( ai.models )
+		await this.setConversationContext()
+		return true
+	
+	}
 
-    const reflection = await this.reflectionEngine.generateReflection(userPrompt, this.context, this.aiModel);
+	async selectModel( models ) {
 
-    console.log(chalk.hex(RESPUESTA_COLOR)('🤖 Generating answer ... '));
-    const response = await this.responseGenerator.generateResponse(userPrompt, reflection, this.aiModel);
-    console.log(chalk.hex(RESPUESTA_COLOR)(response));
+		return new Promise( resolve => {
 
-    const endTime = Date.now();
-    const duration = endTime - startTime;
-    console.log(chalk.bold(`\nTotal processing time: ${setTimeString(duration)}`));
+			console.log( 'Available Ollama models:' )
+			models.forEach( ( model, index ) => {
 
-    this.updateInternalState(userPrompt, response, reflection);
-  }
+				console.log( `${index + 1}. ${model}` )
+			
+			} )
 
-  updateInternalState(userPrompt, response, reflection) {
-    const sentiment = this.languageProcessor.analyzeSentiment(userPrompt);
-    this.emotionalState.updateEmotion('joy', sentiment);
-    this.memoryBank.addToShortTermMemory(userPrompt);
-    this.knowledgeBase.addFact(response);
-    this.reflectionEngine.previousResponse = response;
-    this.reflectionEngine.previousThinking = reflection;
-  }
+			this.rl.question( 'Select the Ollama model (enter the number):', answer => {
 
-  async startConversation() {
-    const askQuestion = () => {
-      this.rl.question('Escribe tu pregunta (o "exit" para terminar): ', async (userPrompt) => {
-        if (userPrompt.toLowerCase() === 'exit') {
-          console.log('Ending the conversation ...');
-          this.rl.close();
-        } else {
-          await this.processUserInput(userPrompt);
-          askQuestion();
-        }
-      });
-    };
+				const index = parseInt( answer, 10 ) - 1
+				if ( index >= 0 && index < models.length ) {
 
-    askQuestion();
-  }
+					this.aiModel = models[ index ]
+					resolve()
+				
+				} else {
+
+					console.log( 'Invalid selection, tries again.' )
+					this.selectModel( models ).then( resolve ).catch( e => console.error( e ) )
+				
+				}
+			
+			} )
+		
+		} )
+	
+	}
+
+	async setConversationContext() {
+
+		return new Promise( resolve => {
+
+			this.rl.question( 'Enter the general theme of the conversation:', topic => {
+
+				this.context = topic
+				this.knowledgeBase.addFact( 'The main theme of the conversation is $ {topic}' )
+				resolve()
+			
+			} )
+		
+		} )
+	
+	}
+
+	async processUserInput( userPrompt ) {
+
+		const startTime = Date.now()
+
+		const reflection = await this.reflectionEngine.generateReflection( userPrompt, this.context, this.aiModel )
+
+		console.log( RESPONSE_COLOR( '🤖 Generating answer ... ' ) )
+		const response = await this.responseGenerator.generateResponse( userPrompt, reflection, this.aiModel )
+		console.log( RESPONSE_COLOR( response ) )
+
+		const endTime  = Date.now()
+		const duration = endTime - startTime
+		console.log( BOLD( `\nTotal processing time: ${setTimeString( duration )}` ) )
+
+		this.updateInternalState( userPrompt, response, reflection )
+	
+	}
+
+	updateInternalState( userPrompt, response, reflection ) {
+
+		const sentiment = this.languageProcessor.analyzeSentiment( userPrompt )
+		this.emotionalState.updateEmotion( 'joy', sentiment )
+		this.memoryBank.addToShortTermMemory( userPrompt )
+		this.knowledgeBase.addFact( response )
+		this.reflectionEngine.previousResponse = response
+		this.reflectionEngine.previousThinking = reflection
+	
+	}
+
+	async startConversation() {
+
+		const askQuestion = () => {
+
+			this.rl.question( 'Escribe tu pregunta (o "exit" para terminar): ', async userPrompt => {
+
+				if ( userPrompt.toLowerCase() === 'exit' ) {
+
+					console.log( 'Ending the conversation ...' )
+					this.rl.close()
+				
+				} else {
+
+					await this.processUserInput( userPrompt )
+					askQuestion()
+				
+				}
+			
+			} )
+		
+		}
+
+		askQuestion()
+	
+	}
+
 }
 
-export default async function main() {
-  const conversationManager = new ConversationManager();
-  if (await conversationManager.initialize()) {
-    conversationManager.startConversation();
-  }
+export default async () => {
+
+	const conversationManager = new ConversationManager()
+	if ( await conversationManager.initialize() ) {
+
+		conversationManager.startConversation()
+	
+	}
+
 }
