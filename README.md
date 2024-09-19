@@ -45,7 +45,7 @@ To install the library, use npm or yarn:
 npm install brainvat
 
 # Using pnpm
-pnpm i brainvat
+pnpm install brainvat
 
 # Using yarn
 yarn add brainvat
