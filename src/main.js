@@ -1,31 +1,17 @@
-import color  from 'chalk'
+
+import natural from 'natural'
+
 import {
-	spawnSync,
-	execSync, 
-} from 'child_process'
-import natural  from 'natural'
-import readline from 'readline'
+	BOLD,
+	REFLEXION_COLOR,
+	RESPONSE_COLOR, 
+} from './utils/color.js'
+import {
+	createReadLine,
+	execChild,
+	execTemp,
+} from './utils/process.js'
 
-const BOLD            = color.bold
-const REFLEXION_COLOR = color.hex( '#ef8da8' )
-const RESPONSE_COLOR  = color.hex( '#15b3ad' )
-const createReadLine  = () => {
-
-	const rl = readline.createInterface( {
-		input  : process.stdin,
-		output : process.stdout,
-	} )
-	readline.cursorTo( process.stdout, 0, 0 )
-	readline.clearScreenDown( process.stdout )
-	rl.resume()
-	rl.on( 'close', () => {
-
-		console.warn( '\n\nBye bye! 👋\n' )
-  
-	} )
-	return rl
-
-}
 const setTimeString = elapsedTime => `${( elapsedTime / 1000 ).toFixed( 2 )} s`
 
 class AIDetector {
@@ -34,7 +20,7 @@ class AIDetector {
 
 		try {
 
-			const output = execSync( 'ollama list', { encoding: 'utf-8' } )
+			const output = await execChild( 'ollama list' )
 			const lines  = output.split( '\n' ).filter( line => line.trim() )
 
 			const models = lines.slice( 1 ).map( line => {
@@ -288,7 +274,7 @@ class ReflectionEngine {
 
 		try {
 
-			const reflectionResponse = await this.executeCommand( `ollama run ${aiModel} "${this.sanitizeInput( reflectionPrompt )}"` )
+			const reflectionResponse = await execTemp( `ollama run ${aiModel} "${this.sanitizeInput( reflectionPrompt )}"` )
 			const endTime            = Date.now()
 			const elapsedTime        = endTime - startTime
 
@@ -333,18 +319,6 @@ class ReflectionEngine {
 	
 	}
 
-	async executeCommand( command ) {
-
-		return spawnSync( command, { 
-			shell : true,
-			stdio : 'inherit',
-		} )
-	
-	}
-	// async executeCommandChild(command) {
-	//   return execSync(command, { encoding: 'utf-8' }).trim();
-	// }
-
 }
 
 class ResponseGenerator {
@@ -386,7 +360,7 @@ class ResponseGenerator {
 
 		try {
 
-			const response = await this.executeCommand( `ollama run ${aiModel} "${this.sanitizeInput( responsePrompt )}"` )
+			const response = await execTemp( `ollama run ${aiModel} "${this.sanitizeInput( responsePrompt )}"` )
 			return response
 		
 		} catch ( error ) {
@@ -401,15 +375,6 @@ class ResponseGenerator {
 	sanitizeInput( input ) {
 
 		return input.replace( /"/g, '\\"' )
-	
-	}
-
-	async executeCommand( command ) {
-
-		return spawnSync( command, { 
-			shell : true,
-			stdio : 'inherit',
-		} )
 	
 	}
 
@@ -541,7 +506,7 @@ class ConversationManager {
 
 		const askQuestion = () => {
 
-			this.rl.question( 'Escribe tu pregunta (o "exit" para terminar): ', async userPrompt => {
+			this.rl.question( 'Write your question (or "exit" to finish):', async userPrompt => {
 
 				if ( userPrompt.toLowerCase() === 'exit' ) {
 

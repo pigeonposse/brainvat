@@ -1,5 +1,11 @@
 # smartplant
 
+## 0.1.3
+
+### Patch Changes
+
+- add utils folder and fix issues
+
 ## 0.1.2
 
 ### Patch Changes
