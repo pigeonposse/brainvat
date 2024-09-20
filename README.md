@@ -13,11 +13,15 @@
 
 ## Advanced reasoning system along with an emotional layer
 
-![EXPLANATION1](docs/explanation1.png)
+**Brainvat** is an advanced artificial intelligence library designed to offer a more human and natural interaction with users. This technology integrates a sophisticated reasoning system with an emotional layer, enhanced by the incorporation of the **[Bravecore](https://github.com/pigeonposse/bravecore)** library. Thanks to this combination, Brainvat not only processes information but also deeply understands the user's emotions, generating responses that are both contextually relevant and genuinely empathetic. This enriches the interaction experience, adapting uniquely to various situations.
 
-**Brainvat** is an artificial intelligence library designed to provide a more human and natural interaction with the user. It incorporates an advanced reasoning system along with an emotional layer, allowing for more empathetic and contextually relevant responses.
+The integration of *Bravecore* into Brainvat marks a crucial advancement in the evolution of artificial intelligence towards more human and empathetic communication. Bravecore introduces an advanced emotional layer that allows Brainvat not only to analyze data but also to interpret and respond to the user's emotions and moods. This integration significantly enhances the relevance and impact of Brainvat's responses by adapting its behavior and tone according to the detected emotions. In essence, Bravecore transforms Brainvat into a tool capable of understanding not only what is said but also how it is felt, elevating human-machine interaction to a higher level of empathy and emotional connection.
 
 > ⚠️ **Alpha version**. Several Change can happen.
+
+> 💖 **Bravecore** integrated in v.0.1.7.
+
+![EXPLANATION1](docs/explanation1.png)
 
 ## Features
 
@@ -29,8 +33,6 @@
 - 💻 Works seamlessly with command-line interfaces.
 - 🤔 Stimulates further user reflection with open-ended questions.
 - 🌍 Fully accessible and available for public use and contributions.
-
-![EXPLANATION2](docs/explanation2.png)
 
 ## Prerequisites
 
