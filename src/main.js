@@ -6,6 +6,7 @@ import ora from 'ora';
 
 const REFLEXION_COLOR = '#ef8da8';
 const RESPONSE_COLOR = '#15b3ad';
+const PROMPT_COLOR = '#00ff00';
 
 class AIDetector {
   async detectAI() {
@@ -187,8 +188,10 @@ class ReflectionEngine {
       this.updateEmotionalState(reflectionResponse);
 
       spinner.succeed('Reflection generated');
-      console.log(chalk.hex(REFLEXION_COLOR)(reflectionResponse));
+      console.log(); // Add space after "Reflection generated"
       console.log(chalk.hex(REFLEXION_COLOR)(`Total reflection time: ${elapsedTime.toFixed(2)} seconds`));
+      await this.streamText(reflectionResponse, REFLEXION_COLOR);
+      console.log(); // Add space after reflection text
 
       return reflectionResponse;
     } catch (error) {
@@ -196,6 +199,15 @@ class ReflectionEngine {
       console.error('Error generating reflection:', error);
       return 'Error generating reflection';
     }
+  }
+
+  async streamText(text, color) {
+    const words = text.split(' ');
+    for (const word of words) {
+      process.stdout.write(chalk.hex(color)(word + ' '));
+      await new Promise(resolve => setTimeout(resolve, 50)); // Adjust the delay as needed
+    }
+    console.log(); // New line after streaming
   }
 
   updateConfidenceLevel(elapsedTime) {
@@ -319,14 +331,30 @@ class ConversationManager {
   }
 
   async initialize() {
-    console.log(chalk.bold('\nWelcome to Brainvat'));
-    console.log('\nWeaving empathy networks.');
-    console.log('Synchronizing emotions.');
-    console.log('Importing sentiment library.');
-    console.log('Activating thought processes.');
-    console.log('Configuring neural interactions.');
-    console.log('Loading creativity core.');
-    console.log(chalk.bold('\nHuman properties and mechanisms installed.'));
+    console.log(chalk.bold('\nWelcome to Brainvat\n'));
+    
+    const initSteps = [
+      { name: 'Weaving empathy networks', details: ['Initiating empathy matrix...', 'Empathy networks woven successfully.'] },
+      { name: 'Synchronizing emotions', details: ['Synchronizing with emotional spectrum...', 'Emotions synchronized across all channels.'] },
+      { name: 'Importing sentiment library', details: ['Fetching sentiment modules...', 'Loading positive sentiment data...', 'Loading negative sentiment data...', 'Sentiment library imported.'] },
+      { name: 'Activating thought processes', details: ['Engaging cognitive modules...', 'Thought processes are now active.'] },
+      { name: 'Configuring neural interactions', details: ['Establishing neural pathways...', 'Configuring synaptic connections...', 'Neural interactions configured.'] },
+      { name: 'Loading creativity core', details: ['Booting creativity engine...', 'Creativity core loaded and running.'] }
+    ];
+
+    for (let i = 0; i < initSteps.length; i++) {
+      const step = initSteps[i];
+      console.log(chalk.bold(`[${i + 1}/${initSteps.length}] ${step.name}`));
+      console.log('---------------------------------------');
+      for (const detail of step.details) {
+        console.log(detail);
+        await new Promise(resolve => setTimeout(resolve, 200)); // Add a short delay for visual effect
+      }
+      console.log(chalk.hex(PROMPT_COLOR)(`${step.name.replace(/\.\.\.$/, '')} completed.`));
+      console.log(); // Add an empty line for spacing
+    }
+
+    console.log(chalk.bold('Human properties and mechanisms installed.'));
     console.log();
 
     const ai = await new AIDetector().detectAI();
@@ -374,11 +402,9 @@ class ConversationManager {
     
     const endTime = Date.now();
     const responseTime = (endTime - startTime) / 1000; // Convert to seconds
+    console.log(chalk.hex(RESPONSE_COLOR)(`\nTotal response time: ${responseTime.toFixed(2)} seconds`));
 
     await this.streamResponse(response);
-
-    const duration = (endTime - startTime) / 1000; // Convert to seconds
-    console.log(chalk.bold(`\nTotal processing time: ${duration.toFixed(2)} seconds`));
 
     this.updateInternalState(userPrompt, response, reflection);
   }
