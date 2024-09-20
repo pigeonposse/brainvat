@@ -1,7 +1,8 @@
 import natural from 'natural';
 import chalk from 'chalk';
 import { execSync } from 'child_process';
-import readline from 'readline';
+import inquirer from 'inquirer';
+import ora from 'ora';
 
 const REFLEXION_COLOR = '#ef8da8';
 const RESPONSE_COLOR = '#15b3ad';
@@ -10,7 +11,9 @@ class AIDetector {
   async detectAI() {
     try {
       const output = execSync('ollama list', { encoding: 'utf-8' });
-      const models = output.split('\n').filter(line => line.trim()).map(line => line.split(' ')[0]);
+      const models = output.split('\n')
+        .filter(line => line.trim() && !line.startsWith('NAME'))
+        .map(line => line.split(' ')[0]);
       if (models.length > 0) {
         return {
           name: 'ollama',
@@ -170,7 +173,7 @@ class ReflectionEngine {
       Generate a deep and nuanced reflection on the user's question, considering the context, previous interactions, and current emotional state. The reflection should be a cohesive paragraph that flows naturally between these aspects. Avoid repeating information from the previous reflection.
     `.trim();
 
-    console.log(chalk.hex(REFLEXION_COLOR)('🧠 Generating reflection...'));
+    const spinner = ora('🧠 Generating reflection...').start();
 
     const startTime = Date.now();
 
@@ -183,11 +186,13 @@ class ReflectionEngine {
       this.updateConfidenceLevel(elapsedTime);
       this.updateEmotionalState(reflectionResponse);
 
+      spinner.succeed('Reflection generated');
       console.log(chalk.hex(REFLEXION_COLOR)(reflectionResponse));
       console.log(chalk.hex(REFLEXION_COLOR)(`Total reflection time: ${elapsedTime.toFixed(2)} seconds`));
 
       return reflectionResponse;
     } catch (error) {
+      spinner.fail('Error generating reflection');
       console.error('Error generating reflection:', error);
       return 'Error generating reflection';
     }
@@ -249,6 +254,8 @@ class ResponseGenerator {
       - A conclusion or follow-up question to keep the conversation going
     `;
 
+    const spinner = ora('🤖 Generating response...').start();
+
     try {
       let response = await this.executeCommand(`ollama run ${aiModel} "${this.sanitizeInput(responsePrompt)}"`);
       
@@ -259,8 +266,10 @@ class ResponseGenerator {
       }
       
       this.lastResponse = response;
+      spinner.succeed('Response generated');
       return response;
     } catch (error) {
+      spinner.fail('Error generating response');
       console.error('Error generating response:', error);
       return 'I apologize, I encountered an issue processing your question. Could you please rephrase it?';
     }
@@ -307,21 +316,17 @@ class ConversationManager {
     );
     this.context = '';
     this.aiModel = '';
-    this.rl = readline.createInterface({
-      input: process.stdin,
-      output: process.stdout
-    });
   }
 
   async initialize() {
-    console.log(chalk.bold('Welcome to Brainvat'));
+    console.log(chalk.bold('\nWelcome to Brainvat'));
     console.log('\nWeaving empathy networks.');
     console.log('Synchronizing emotions.');
     console.log('Importing sentiment library.');
     console.log('Activating thought processes.');
     console.log('Configuring neural interactions.');
     console.log('Loading creativity core.');
-    console.log('\nHuman properties and mechanisms installed.');
+    console.log(chalk.bold('\nHuman properties and mechanisms installed.'));
     console.log();
 
     const ai = await new AIDetector().detectAI();
@@ -336,33 +341,28 @@ class ConversationManager {
   }
 
   async selectModel(models) {
-    return new Promise((resolve) => {
-      console.log('Available Ollama models:');
-      models.forEach((model, index) => {
-        console.log(`${index + 1}. ${model}`);
-      });
-
-      this.rl.question('Select the Ollama model (enter the number): ', (answer) => {
-        const index = parseInt(answer, 10) - 1;
-        if (index >= 0 && index < models.length) {
-          this.aiModel = models[index];
-          resolve();
-        } else {
-          console.log('Invalid selection, please try again.');
-          this.selectModel(models).then(resolve);
-        }
-      });
-    });
+    const choices = models.map(model => ({ name: model, value: model }));
+    const { selectedModel } = await inquirer.prompt([
+      {
+        type: 'list',
+        name: 'selectedModel',
+        message: 'Select the Ollama model:',
+        choices: choices
+      }
+    ]);
+    this.aiModel = selectedModel;
   }
 
   async setConversationContext() {
-    return new Promise((resolve) => {
-      this.rl.question('Enter the general topic of the conversation: ', (topic) => {
-        this.context = topic;
-        this.knowledgeBase.addFact(`The main topic of the conversation is ${topic}`);
-        resolve();
-      });
-    });
+    const { topic } = await inquirer.prompt([
+      {
+        type: 'input',
+        name: 'topic',
+        message: 'Enter the general topic of the conversation:'
+      }
+    ]);
+    this.context = topic;
+    this.knowledgeBase.addFact(`The main topic of the conversation is ${topic}`);
   }
 
   async processUserInput(userPrompt) {
@@ -370,15 +370,26 @@ class ConversationManager {
 
     const reflection = await this.reflectionEngine.generateReflection(userPrompt, this.context, this.aiModel);
 
-    console.log(chalk.hex(RESPONSE_COLOR)('🤖 Generating response...'));
     const response = await this.responseGenerator.generateResponse(userPrompt, reflection, this.aiModel);
-    console.log(chalk.hex(RESPONSE_COLOR)(response));
-
+    
     const endTime = Date.now();
+    const responseTime = (endTime - startTime) / 1000; // Convert to seconds
+
+    await this.streamResponse(response);
+
     const duration = (endTime - startTime) / 1000; // Convert to seconds
     console.log(chalk.bold(`\nTotal processing time: ${duration.toFixed(2)} seconds`));
 
     this.updateInternalState(userPrompt, response, reflection);
+  }
+
+  async streamResponse(response) {
+    const words = response.split(' ');
+    for (const word of words) {
+      process.stdout.write(chalk.hex(RESPONSE_COLOR)(word + ' '));
+      await new Promise(resolve => setTimeout(resolve, 50)); // Adjust the delay as needed
+    }
+    console.log(); // New line after streaming
   }
 
   updateInternalState(userPrompt, response, reflection) {
@@ -391,27 +402,28 @@ class ConversationManager {
   }
 
   async startConversation() {
-    const askQuestion = () => {
-      this.rl.question('Write your question (or "exit" to finish): ', async (userPrompt) => {
-        if (userPrompt.toLowerCase() === 'exit') {
-          console.log('Ending the conversation...');
-          this.rl.close();
-        } else {
-          await this.processUserInput(userPrompt);
-          askQuestion();
+    while (true) {
+      const { userPrompt } = await inquirer.prompt([
+        {
+          type: 'input',
+          name: 'userPrompt',
+          message: 'Write your question (or "exit" to finish):',
         }
-      });
-    };
+      ]);
 
-    askQuestion();
+      if (userPrompt.toLowerCase() === 'exit') {
+        console.log('Ending the conversation... 👋 Bye bye!');
+        break;
+      }
+
+      await this.processUserInput(userPrompt);
+    }
   }
 }
 
 async function main() {
   const conversationManager = new ConversationManager();
-  if (await conversationManager.initialize())
-
- {
+  if (await conversationManager.initialize()) {
     conversationManager.startConversation();
   }
 }
