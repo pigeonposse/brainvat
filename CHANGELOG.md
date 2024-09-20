@@ -1,5 +1,11 @@
 # smartplant
 
+## 0.1.6
+
+### Patch Changes
+
+- fix text
+
 ## 0.1.5
 
 ### Patch Changes
