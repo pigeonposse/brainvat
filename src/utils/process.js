@@ -2,8 +2,10 @@ import {
 	spawn,
 	spawnSync, 
 } from 'child_process'
+import ora      from 'ora'
 import readline from 'readline'
 
+export const loading = ora
 export const createReadLine = () => {
 
 	const rl = readline.createInterface( {
