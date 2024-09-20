@@ -45,7 +45,7 @@
 		"dev": "node ./src/bin.js",
 		"build": "pnpm run --sequential \"/^build:.*/\"",
 		"build:bins": "node ./.dev/build-bin.mjs",
-		"test": "vitest run",
+		"test": "vitest run src --passWithNoTests",
 		"update-version": "changeset && changeset version",
 		"push-manual": "git add . && git commit -m \"$1\" && git push -f origin main",
 		"push": "git add . && cz && git push -f origin $@",

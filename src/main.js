@@ -462,8 +462,8 @@ class ConversationManager {
 				name    : 'Importing sentiment library',
 				details : [
 					'Fetching sentiment modules...',
-					'Loadinging positive sentiment data...',
-					'Loadinging negative sentiment data...',
+					'Loading positive sentiment data...',
+					'Loading negative sentiment data...',
 					'Sentiment library imported.',
 				], 
 			},
@@ -480,8 +480,8 @@ class ConversationManager {
 				], 
 			},
 			{
-				name    : 'Loadinging creativity core',
-				details : [ 'Booting creativity engine...', 'Creativity core loadinged and running.' ], 
+				name    : 'Loading creativity core',
+				details : [ 'Booting creativity engine...', 'Creativity core loaded and running.' ], 
 			},
 		]
 
@@ -493,7 +493,7 @@ class ConversationManager {
 			for ( const detail of step.details ) {
 
 				console.log( detail )
-				await new Promise( resolve => setTimeout( resolve, 200 ) ) // Add a short delay for visual effect
+				await new Promise( resolve => setTimeout( resolve, 150 ) ) // Add a short delay for visual effect
 			
 			}
 			console.log( PROMPT_COLOR( `${step.name.replace( /\.\.\.$/, '' )} completed.` ) )
