@@ -1,5 +1,11 @@
 # smartplant
 
+## 0.1.7
+
+### Patch Changes
+
+- set alpha note
+
 ## 0.1.6
 
 ### Patch Changes

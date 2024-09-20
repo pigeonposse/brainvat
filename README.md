@@ -17,7 +17,7 @@
 
 **Brainvat** is an artificial intelligence library designed to provide a more human and natural interaction with the user. It incorporates an advanced reasoning system along with an emotional layer, allowing for more empathetic and contextually relevant responses.
 
-> ⚠ **Alpha version**. Several Change can happen.
+> ⚠️ **Alpha version**. Several Change can happen.
 
 ## Features
 
